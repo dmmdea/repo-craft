@@ -1,0 +1,14 @@
+# Runtime state — opt-in, not tracked
+state/*
+!state/.gitkeep
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Test scratch
+/tmp-test/
