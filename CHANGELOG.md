@@ -6,6 +6,28 @@ Versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.1] — 2026-04-21
+
+Post-smoke-test fixes from the first real contribution session (ryaker/zora#167).
+All changes forward-compatible.
+
+### Added
+- `lib/sniff.sh` now accepts `--target <owner>/<repo>` to inspect a remote GitHub
+  repo without needing a local clone. Previously sniff reported cwd's repo even
+  when the orchestrator was called with an explicit target, which misrouted profile
+  selection.
+- Playbook 02 step 4 now branches explicitly on existing-issue state: 4a (no
+  issue → create), 4b (issue exists, no reporter PR → proceed), 4c (issue exists
+  AND reporter has patch/PR → coordinate-via-comment first), 4d (ritual rubric
+  override: prefer commenting on the existing issue over opening a meta-issue).
+- Playbook 02 step 1 explicitly defers the expensive local test-suite run
+  (ritual step 10) until after maintainer engagement for issue-first paths.
+- `lib/remember.sh` header documents the recommended `repos` and `open_prs`
+  schemas. Custom fields allowed; readers ignore unknown keys.
+
+### Changed
+- Nothing removed or renamed. Existing callers keep working.
+
 ## [0.1.0] — 2026-04-20
 
 ### Deploy notes

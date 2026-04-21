@@ -30,8 +30,12 @@ requires_skills:
 bash ~/.claude/skills/repo-craft/lib/load-ref.sh 06#pre-pr-ritual
 ```
 
-Follow the 10-step pre-PR ritual with G/Y/R scoring. If ≥2 reds, STOP and open an
-issue first instead of a PR.
+Follow the 10-step pre-PR ritual with G/Y/R scoring. Step 10 (full local test
+suite) is expensive; for issue-first paths (4a, 4c), defer step 10 until after
+maintainer engagement lands. Score steps 1-9 first and decide the path.
+
+If ≥2 reds, STOP. If an issue does not yet exist, open one (path 4a). If an issue
+does exist, post a coordination comment (path 4c) — do not open a new meta-issue.
 
 ### Step 2 — Author profile
 
@@ -55,16 +59,50 @@ Record findings in memory:
 bash ~/.claude/skills/repo-craft/lib/remember.sh repos <owner>/<repo> "$(jq -n --arg p '02-first-time-contributor' --arg ts "$(date -u +%FT%TZ)" --arg cla "<yes|no>" --arg dco "<yes|no>" '{profile:$p, ts:$ts, cla:$cla, dco:$dco}')"
 ```
 
-### Step 4 — Issue-first (unless CONTRIBUTING explicitly waives)
+### Step 4 — Issue-first path (branch on existing issue state)
 
-Load templates:
+First determine which branch applies:
+
+**4a. No issue exists for this change.**
+
+Load templates and create one:
 
 ```bash
 bash ~/.claude/skills/repo-craft/lib/load-ref.sh 10#issue-body-templates
 ```
 
 Invoke `github-issue-creator` or `issues` skill. Wait for maintainer engagement
-before PR unless you're 100% sure of direction.
+before PR unless you're 100% sure of direction and CONTRIBUTING waives issue-first.
+
+**4b. Issue exists, no prior reporter patch or PR.**
+
+Proceed to PR flow (step 5+). Reference the issue in PR body (`Closes #N`).
+
+**4c. Issue exists AND the reporter already has a patch or opened/closed PR.**
+
+DO NOT open a competing PR. Coordinate first:
+
+1. Post ONE comment on the issue asking the reporter if they still intend to
+   submit, and the maintainer for scoping direction. Offer `Co-authored-by:`
+   attribution if you proceed. Keep under 150 words, no status-bump language,
+   no off-hours @-mentions (see ref 08#anti-patterns).
+2. Record the coordination state:
+   ```bash
+   bash ~/.claude/skills/repo-craft/lib/remember.sh repos <owner>/<repo> \
+     "$(jq -n --arg p '02-first-time-contributor' --arg ts "$(date -u +%FT%TZ)" \
+        --arg status 'awaiting-reporter-response' --arg issue '<N>' \
+        --arg comment_url '<url>' \
+        '{profile:$p, ts:$ts, status:$status, pending_issue:$issue, comment_url:$comment_url}')"
+   ```
+3. Wait 3-5 business days. On resumption: if reporter consents or stays silent,
+   proceed to step 5+ with full attribution. If reporter reopens their own PR,
+   close this flow and offer review instead.
+
+**4d. Ritual rubric override.**
+
+If the pre-PR ritual (step 1) scored 0R/≥4Y AND an issue already exists, prefer
+path 4c (coordinate-via-comment) over opening yet another issue. A new meta-issue
+adds noise; a comment on the existing issue is the correct remedy.
 
 ## PR flow
 
