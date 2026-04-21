@@ -120,9 +120,15 @@ Finish with ONE clear next-step. Not a decision menu.
 ## Profile 02 — first-time-contributor {#profile-02}
 
 **When:** non-trivial change + never merged here before.
-**Ritual:** full (30-min pre-PR).
+**Ritual:** full (30-min pre-PR). Step 10 (expensive test-suite run) defers until after maintainer engagement on issue-first paths.
 **Playbook:** [playbooks/02-first-time-contributor.md](./playbooks/02-first-time-contributor.md)
 **Requires refs:** 02, 06, 08, 10, 14
+
+Step 4 branches on existing-issue state:
+- **4a** — no issue exists → open one with `github-issue-creator`.
+- **4b** — issue exists, no reporter PR → proceed to PR flow (step 5+), reference via `Closes #N`.
+- **4c** — issue exists **AND** reporter has a patch/open PR → do NOT compete. Post one coordination comment, record `status: awaiting-reporter-response`, wait 3-5 business days.
+- **4d** — ritual rubric override: 0R/≥4Y + issue already exists → prefer commenting on the existing issue over opening a meta-issue.
 
 Execute the playbook end-to-end. Do not skip steps. This is your first impression.
 

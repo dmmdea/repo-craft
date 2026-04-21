@@ -39,11 +39,11 @@
 ## Architecture
 
 Single Claude Code skill (not a plugin). ~300 LOC orchestrator (`SKILL.md`) that:
-1. Sniffs context → one of 4 loci
+1. Sniffs context → one of 4 loci (supports `--target <owner>/<repo>` for remote inspection without a clone)
 2. Checks memory for prior touches on this repo
 3. Picks a profile
 4. Loads only the reference sections the profile needs
-5. Dispatches the corresponding playbook
+5. Dispatches the corresponding playbook — which may itself branch on real-world state (e.g. profile 02's step 4 branches on existing-issue state: no issue / issue-only / issue+reporter-PR / rubric-override)
 6. Persists outcome
 7. Returns **one** next-step recommendation
 

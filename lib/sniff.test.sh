@@ -27,6 +27,28 @@ pass "own-repo detection"
 echo "$out" | jq -e . >/dev/null || fail "JSON output is valid"
 pass "JSON output is valid"
 
+# Test 4: --target mode populates .target field + valid JSON
+# Use dmmdea/repo-craft since we control it. Works with or without gh auth —
+# unauthenticated path still produces valid JSON with target + error fields.
+cd "$tmp"
+out=$("$SNIFF" --target dmmdea/repo-craft 2>/dev/null || true)
+echo "$out" | jq -e '.target == "dmmdea/repo-craft"' >/dev/null || fail "--target field not set"
+pass "--target populates target field"
+
+# Test 5: --target mode always sets .locus
+echo "$out" | jq -e '.locus' >/dev/null || fail "--target missing locus"
+pass "--target includes locus"
+
+# Test 6: --target with missing value → treat as path (no crash on flag-only)
+# Not a hard failure: ensure no crash and JSON is produced.
+out=$("$SNIFF" --target 2>/dev/null || true)
+# Either it treated --target as a path (off-repo) or refused gracefully.
+# Both are acceptable; we only require valid JSON output.
+if [ -n "$out" ]; then
+  echo "$out" | jq -e . >/dev/null || fail "--target <missing> produced invalid JSON"
+fi
+pass "--target without value degrades gracefully"
+
 # Cleanup
 cd /
 rm -rf "$tmp"

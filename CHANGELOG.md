@@ -6,6 +6,11 @@ Versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- `lib/sniff.test.sh`: regression coverage for `--target` mode (populates target field, sets locus, degrades gracefully without value). Three new PASS cases (total 6).
+- `SKILL.md` Profile 02 summary now documents the 4a/4b/4c/4d issue-state branching added in 0.1.1.
+- `README.md` architecture blurb mentions `--target` and profile 02's issue-state branching.
+
 ## [0.1.1] — 2026-04-21
 
 Post-smoke-test fixes from the first real contribution session (ryaker/zora#167).
